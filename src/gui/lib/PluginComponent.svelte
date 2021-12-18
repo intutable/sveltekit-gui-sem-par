@@ -1,5 +1,6 @@
 <script lang="ts">
     import InputField from "./inputField/InputField.svelte"
+    import SuggestionContainer from "./suggestionContainer/SuggestionContainer.svelte"
     import type { Suggestion } from "./types"
 
     let suggestions: Suggestion[] | undefined = undefined
@@ -8,6 +9,10 @@
 <div class="main-container">
     <div class="title">SemPar</div>
     <InputField bind:suggestions={suggestions} />
+    {#if suggestions}
+        <div class="divider"></div>
+        <SuggestionContainer suggestions={suggestions} />
+    {/if}
 </div>
 
 <style lang="sass">
