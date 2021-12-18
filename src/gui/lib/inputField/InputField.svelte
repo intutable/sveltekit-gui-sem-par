@@ -1,11 +1,11 @@
 <script lang="ts">
     import { getContext } from "svelte"
-    import { getSuggestions } from "./fetch"
     import type { RequestContext, Suggestion } from "../types"
+    import { getSuggestions } from "./fetch"
 
     export let suggestions: Suggestion[] | undefined = undefined
 
-    const context: RequestContext = getContext("request");
+    const context: RequestContext = getContext("request")
 
     async function onSubmit(event): Promise<void> {
         const formData = new FormData(event.target)
