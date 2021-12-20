@@ -6,5 +6,6 @@ export interface Component {
 }
 
 export interface RegisterUiRequest extends CoreRequest {
+    plugin: string
     components: Component[]
 }
