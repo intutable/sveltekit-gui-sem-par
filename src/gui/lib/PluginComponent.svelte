@@ -21,6 +21,7 @@
     @extend .theme-plain
     display: flex
     flex-direction: column
+    flex: 1
 
   .divider
     border-top: 2px solid rgba(0, 0, 0, 0.1)
