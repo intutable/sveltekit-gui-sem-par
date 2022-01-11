@@ -7,7 +7,6 @@
 </script>
 
 <div class="main-container">
-    <div class="title">SemPar</div>
     <InputField bind:suggestions={suggestions} />
     {#if suggestions}
         <div class="divider"></div>
@@ -22,13 +21,7 @@
     @extend .theme-plain
     display: flex
     flex-direction: column
-    height: 20rem
-
-  .title
-    font-size: 1.1rem
-    font-weight: bold
-    margin: 0.5rem 0.3rem 0.5rem 0.3rem
-    border: none
+    flex: 1
 
   .divider
     border-top: 2px solid rgba(0, 0, 0, 0.1)
