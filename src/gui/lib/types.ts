@@ -1,7 +1,12 @@
 import type { CoreRequest, CoreResponse } from "@intutable/core"
+import type { SvelteComponent } from "svelte"
 
 export interface RequestContext {
     send: (request: CoreRequest, body: object) => CoreResponse
+}
+
+export interface CommonUiContext {
+    getLoadingIndicator: () => SvelteComponent
 }
 
 export interface Suggestion {
