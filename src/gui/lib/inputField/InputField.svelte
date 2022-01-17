@@ -1,31 +1,16 @@
 <script lang="ts">
-    import { getContext } from "svelte"
-    import type { RequestContext, RequestError, Suggestion } from "../types"
-    import { getSuggestions } from "../fetch"
+    import { createEventDispatcher } from "svelte"
 
-    export let suggestions: Suggestion[] | undefined = undefined
-
-    const context: RequestContext = getContext("request")
+    const dispatcher = createEventDispatcher()
 
     async function onSubmit(event): Promise<void> {
         const formData = new FormData(event.target)
         const data = Object.fromEntries(formData.entries())
-        const query = data.query
-
-        if (!query) {
-            return
-        }
-
-        try {
-            const response = await getSuggestions(query, context)
-            suggestions = response.suggestions
-        } catch (error: RequestError) {
-            console.log(error.body.error)
-        }
+        dispatcher("submit", data.query)
     }
 
     async function onSearch(): Promise<void> {
-        suggestions = undefined
+        dispatcher("clear")
     }
 </script>
 

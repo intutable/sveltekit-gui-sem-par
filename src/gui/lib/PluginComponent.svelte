@@ -1,13 +1,36 @@
 <script lang="ts">
+    import { getContext } from "svelte"
+    import { getSuggestions } from "./fetch"
     import InputField from "./inputField/InputField.svelte"
     import SuggestionContainer from "./suggestionContainer/SuggestionContainer.svelte"
-    import type { Suggestion } from "./types"
+    import type { RequestContext, Suggestion } from "./types"
+    import { RequestError } from "./types"
 
+    const requestContext = getContext<RequestContext>("request")
     let suggestions: Suggestion[] | undefined = undefined
+
+    async function onSubmit(event: CustomEvent): Promise<void> {
+        const query = event.detail
+
+        if (!query || typeof query !== 'string') {
+            return
+        }
+
+        try {
+            const response = await getSuggestions(query, requestContext)
+            suggestions = response.suggestions
+        } catch (error: RequestError) {
+            console.log(error.body.error)
+        }
+    }
+
+    async function onClear(): Promise<void> {
+        suggestions = undefined
+    }
 </script>
 
 <div class="main-container">
-    <InputField bind:suggestions={suggestions} />
+    <InputField on:submit={onSubmit} on:clear={onClear}/>
     {#if suggestions}
         <div class="divider"></div>
         <SuggestionContainer suggestions={suggestions} />
