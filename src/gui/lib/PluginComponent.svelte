@@ -1,6 +1,6 @@
 <script lang="ts">
     import { getContext } from "svelte"
-    import { getSuggestions } from "./fetch"
+    import { executeCodeSnippet, getSuggestions } from "./fetch"
     import InputField from "./inputField/InputField.svelte"
     import SuggestionContainer from "./suggestionContainer/SuggestionContainer.svelte"
     import type { RequestContext, Suggestion } from "./types"
@@ -27,13 +27,24 @@
     async function onClear(): Promise<void> {
         suggestions = undefined
     }
+
+    async function onExecute(event: CustomEvent): Promise<void> {
+        const suggestion: Suggestion = event.detail
+        console.log(`Executing snippet: "${suggestion.snippet}"`)
+
+        try {
+            await executeCodeSnippet(suggestion.snippet, requestContext)
+        } catch (error: RequestError) {
+            console.log(error.body.error)
+        }
+    }
 </script>
 
 <div class="main-container">
     <InputField on:submit={onSubmit} on:clear={onClear}/>
     {#if suggestions}
         <div class="divider"></div>
-        <SuggestionContainer suggestions={suggestions} />
+        <SuggestionContainer suggestions={suggestions} on:execute={onExecute}/>
     {/if}
 </div>
 
