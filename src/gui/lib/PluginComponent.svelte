@@ -4,7 +4,7 @@
     import InputField from "./inputField/InputField.svelte"
     import SuggestionContainer from "./suggestionContainer/SuggestionContainer.svelte"
     import type { CommonUiContext, RequestContext, Suggestion } from "./types"
-    import { RequestError } from "./types"
+    import { Output, OutputType, RequestError } from "./types"
 
     const requestContext = getContext<RequestContext>("request")
     const commonUiContext = getContext<CommonUiContext>("commonUi")
@@ -12,9 +12,12 @@
     let loadingIndicator: SvelteComponent
     let showLoadingIndicator = false
     let loadingTitle = ""
+    let outputPanel: SvelteComponent
+    let output = undefined
 
     onMount(async () => {
         loadingIndicator = commonUiContext.getLoadingIndicator()
+        outputPanel = commonUiContext.getOutputPanel()
     })
 
     async function onSubmit(event: CustomEvent): Promise<void> {
@@ -51,9 +54,13 @@
         onClear()
 
         try {
-            await executeCodeSnippet(suggestion.snippet, requestContext)
+            const response = await executeCodeSnippet(suggestion.snippet, requestContext)
+
+            const message = response.message.charAt(0).toUpperCase() + response.message.slice(1)
+            output = new Output(OutputType.Info, message)
         } catch (error: RequestError) {
-            console.log(error.body.error)
+            const message = await error.body.error
+            output = new Output(OutputType.Error, message)
         }
 
         showLoadingIndicator = false
@@ -67,6 +74,8 @@
     {:else if suggestions}
         <div class="divider"></div>
         <SuggestionContainer suggestions={suggestions} on:execute={onExecute} />
+    {:else if output}
+        <svelte:component this={outputPanel} {output} />
     {/if}
 </div>
 
@@ -81,5 +90,5 @@
 
   .divider
     border-top: 2px solid rgba(0, 0, 0, 0.1)
-    margin: 1.2rem 0 0.6rem 0
+    margin-bottom: 0.6rem
 </style>

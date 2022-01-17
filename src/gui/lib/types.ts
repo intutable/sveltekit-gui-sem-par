@@ -7,6 +7,7 @@ export interface RequestContext {
 
 export interface CommonUiContext {
     getLoadingIndicator: () => SvelteComponent
+    getOutputPanel: () => SvelteComponent
 }
 
 export interface Suggestion {
@@ -35,5 +36,14 @@ export interface ExecuteCodeResponse extends CoreResponse {
 
 export interface RequestError extends Error {
     body: object
+}
+
+export class Output {
+    constructor(public type: OutputType, public message: string) {}
+}
+
+export enum OutputType {
+    Info = "Info",
+    Error = "Error"
 }
 

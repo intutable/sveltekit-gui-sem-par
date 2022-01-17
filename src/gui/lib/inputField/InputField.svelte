@@ -20,10 +20,10 @@
 </form>
 
 <style lang="sass">
-
   form
     display: flex
     padding: 0.5rem
+    margin-bottom: 1.2rem
     background: hsla(0, 0%, 0%, 0.05)
     border-radius: 6px
 
