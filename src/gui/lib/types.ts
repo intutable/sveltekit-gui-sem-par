@@ -17,3 +17,8 @@ export interface SuggestionsRequest {
 export interface SuggestionsResponse extends CoreResponse {
     suggestions: Suggestion[]
 }
+
+export interface RequestError extends Error {
+    body: object
+}
+

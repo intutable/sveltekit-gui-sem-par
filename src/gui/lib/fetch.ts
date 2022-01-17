@@ -1,5 +1,5 @@
 import type { CoreRequest } from "@intutable/core"
-import type { RequestContext, SuggestionsRequest, SuggestionsResponse } from "../types"
+import type { RequestContext, SuggestionsRequest, SuggestionsResponse } from "./types"
 
 export async function getSuggestions(
     query: string,

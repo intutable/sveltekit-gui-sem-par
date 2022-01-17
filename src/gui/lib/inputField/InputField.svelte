@@ -1,7 +1,7 @@
 <script lang="ts">
     import { getContext } from "svelte"
-    import type { RequestContext, Suggestion } from "../types"
-    import { getSuggestions } from "./fetch"
+    import type { RequestContext, RequestError, Suggestion } from "../types"
+    import { getSuggestions } from "../fetch"
 
     export let suggestions: Suggestion[] | undefined = undefined
 
@@ -16,8 +16,12 @@
             return
         }
 
-        const response = await getSuggestions(query, context)
-        suggestions = response.suggestions
+        try {
+            const response = await getSuggestions(query, context)
+            suggestions = response.suggestions
+        } catch (error: RequestError) {
+            console.log(error.body.error)
+        }
     }
 
     async function onSearch(): Promise<void> {
