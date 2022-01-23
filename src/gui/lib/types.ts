@@ -17,3 +17,17 @@ export interface SuggestionsRequest {
 export interface SuggestionsResponse extends CoreResponse {
     suggestions: Suggestion[]
 }
+
+export interface ExecuteCodeRequest {
+    code: string
+}
+
+export interface ExecuteCodeResponse extends CoreResponse {
+    message: string
+    output: string
+    data: object[]
+}
+
+export interface RequestError extends Error {
+    body: object
+}

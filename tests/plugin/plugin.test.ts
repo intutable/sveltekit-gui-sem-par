@@ -34,7 +34,15 @@ describe("plugin registration", () => {
         events.listenForRequests("gui-es", "registerUi", requestHandler)
         await createCore()
 
-        expect(requestObject?.components).toEqual([{ name: "PluginComponent", title: "SemPar"}])
+        expect(requestObject?.components).toEqual(
+            [
+                {
+                    name: "PluginComponent",
+                    title: "SemPar",
+                    dimensions: { minWidth: 20, minHeight: 12 }
+                }
+            ]
+        )
     })
 })
 

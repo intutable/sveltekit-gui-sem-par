@@ -6,7 +6,13 @@ export async function init(plugins: PluginLoader): Promise<void> {
         channel: "gui-es",
         method: "registerUi",
         plugin: "sem-par-gui",
-        components: [{ name: "PluginComponent", title: "SemPar" }]
+        components: [
+            {
+                name: "PluginComponent",
+                title: "SemPar",
+                dimensions: { minWidth: 20, minHeight: 12 }
+            }
+        ]
     }
 
     await plugins.request(request)

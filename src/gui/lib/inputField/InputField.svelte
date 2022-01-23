@@ -1,27 +1,16 @@
 <script lang="ts">
-    import { getContext } from "svelte"
-    import type { RequestContext, Suggestion } from "../types"
-    import { getSuggestions } from "./fetch"
+    import { createEventDispatcher } from "svelte"
 
-    export let suggestions: Suggestion[] | undefined = undefined
-
-    const context: RequestContext = getContext("request")
+    const dispatcher = createEventDispatcher()
 
     async function onSubmit(event): Promise<void> {
         const formData = new FormData(event.target)
         const data = Object.fromEntries(formData.entries())
-        const query = data.query
-
-        if (!query) {
-            return
-        }
-
-        const response = await getSuggestions(query, context)
-        suggestions = response.suggestions
+        dispatcher("submit", data.query)
     }
 
     async function onSearch(): Promise<void> {
-        suggestions = undefined
+        dispatcher("clear")
     }
 </script>
 
@@ -31,10 +20,10 @@
 </form>
 
 <style lang="sass">
-
   form
     display: flex
     padding: 0.5rem
+    margin-bottom: 1.2rem
     background: hsla(0, 0%, 0%, 0.05)
     border-radius: 6px
 
