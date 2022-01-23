@@ -10,7 +10,7 @@
     let suggestions: Suggestion[] | undefined = undefined
     let showLoadingIndicator = false
     let loadingTitle = ""
-    let output = undefined
+    let output: Output | undefined = undefined
 
     async function onSubmit(event: CustomEvent): Promise<void> {
         const query = event.detail
