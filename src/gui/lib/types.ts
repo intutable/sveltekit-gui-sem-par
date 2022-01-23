@@ -31,4 +31,3 @@ export interface ExecuteCodeResponse extends CoreResponse {
 export interface RequestError extends Error {
     body: object
 }
-
