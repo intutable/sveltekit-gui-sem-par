@@ -30,10 +30,11 @@
 {/if}
 
 <style lang="sass">
-  @use "../../style/util"
+  @use "../../../../node_modules/@intutable/common-gui/dist/style/util"
 
   .no-results
     @extend .center-content
+    flex-direction: column
     color: hsla(0, 0%, 0%, 0.5)
     line-height: 1.5rem
 

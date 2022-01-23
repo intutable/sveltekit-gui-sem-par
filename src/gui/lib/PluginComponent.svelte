@@ -1,24 +1,16 @@
 <script lang="ts">
-    import { getContext, onMount, SvelteComponent } from "svelte"
+    import { LoadingIndicator, Output, OutputPanel, OutputType } from "@intutable/common-gui"
+    import { getContext } from "svelte"
     import { executeCodeSnippet, getSuggestions } from "./fetch"
     import InputField from "./inputField/InputField.svelte"
     import SuggestionContainer from "./suggestionContainer/SuggestionContainer.svelte"
-    import type { CommonUiContext, RequestContext, Suggestion } from "./types"
-    import { Output, OutputType, RequestError } from "./types"
+    import type { RequestContext, RequestError, Suggestion } from "./types"
 
     const requestContext = getContext<RequestContext>("request")
-    const commonUiContext = getContext<CommonUiContext>("commonUi")
     let suggestions: Suggestion[] | undefined = undefined
-    let loadingIndicator: SvelteComponent
     let showLoadingIndicator = false
     let loadingTitle = ""
-    let outputPanel: SvelteComponent
     let output = undefined
-
-    onMount(async () => {
-        loadingIndicator = commonUiContext.getLoadingIndicator()
-        outputPanel = commonUiContext.getOutputPanel()
-    })
 
     async function onSubmit(event: CustomEvent): Promise<void> {
         const query = event.detail
@@ -70,17 +62,17 @@
 <div class="main-container">
     <InputField on:submit={onSubmit} on:clear={onClear} />
     {#if showLoadingIndicator}
-        <svelte:component this={loadingIndicator} title={loadingTitle} />
+        <LoadingIndicator title={loadingTitle} />
     {:else if suggestions}
         <div class="divider"></div>
         <SuggestionContainer suggestions={suggestions} on:execute={onExecute} />
     {:else if output}
-        <svelte:component this={outputPanel} {output} />
+        <OutputPanel {output} />
     {/if}
 </div>
 
 <style lang="sass">
-  @use "../style/theme"
+  @use "../../node_modules/@intutable/common-gui/dist/style/theme"
 
   .main-container
     @extend .theme-plain
