@@ -1,10 +1,13 @@
 <script lang="ts">
+    import { createEventDispatcher } from "svelte"
     import type { Suggestion } from "../types"
 
     export let suggestions: Suggestion[] | undefined = undefined
 
+    const dispatcher = createEventDispatcher()
+
     async function onSuggestionClick(suggestion: Suggestion): Promise<void> {
-        console.log(`Executing snippet: "${suggestion.snippet}"`)
+        dispatcher("execute", suggestion)
     }
 </script>
 
