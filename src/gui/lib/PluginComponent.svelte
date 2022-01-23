@@ -3,8 +3,7 @@
     import { executeCodeSnippet, getSuggestions } from "./fetch"
     import InputField from "./inputField/InputField.svelte"
     import SuggestionContainer from "./suggestionContainer/SuggestionContainer.svelte"
-    import type { RequestContext, Suggestion } from "./types"
-    import { RequestError } from "./types"
+    import type { RequestContext, RequestError, Suggestion } from "./types"
 
     const requestContext = getContext<RequestContext>("request")
     let suggestions: Suggestion[] | undefined = undefined
@@ -12,7 +11,7 @@
     async function onSubmit(event: CustomEvent): Promise<void> {
         const query = event.detail
 
-        if (!query || typeof query !== 'string') {
+        if (!query || typeof query !== "string") {
             return
         }
 
@@ -41,10 +40,10 @@
 </script>
 
 <div class="main-container">
-    <InputField on:submit={onSubmit} on:clear={onClear}/>
+    <InputField on:submit={onSubmit} on:clear={onClear} />
     {#if suggestions}
         <div class="divider"></div>
-        <SuggestionContainer suggestions={suggestions} on:execute={onExecute}/>
+        <SuggestionContainer suggestions={suggestions} on:execute={onExecute} />
     {/if}
 </div>
 
