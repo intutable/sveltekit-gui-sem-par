@@ -1,10 +1,10 @@
 import { PluginLoader } from "@intutable/core"
-import { RegisterUiRequest } from "./types"
+import { RegisterComponentsRequest } from "./types"
 
 export async function init(plugins: PluginLoader): Promise<void> {
-    const request: RegisterUiRequest = {
+    const request: RegisterComponentsRequest = {
         channel: "gui-es",
-        method: "registerUi",
+        method: "registerComponents",
         plugin: "sem-par-gui",
         components: [
             {

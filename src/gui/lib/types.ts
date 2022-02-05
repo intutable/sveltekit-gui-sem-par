@@ -1,7 +1,7 @@
 import type { CoreRequest, CoreResponse } from "@intutable/core"
 
 export interface RequestContext {
-    send: (request: CoreRequest, body: object) => CoreResponse
+    send: (request: CoreRequest, body: object) => Promise<CoreResponse>
 }
 
 export interface Suggestion {

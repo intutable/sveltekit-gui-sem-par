@@ -23,7 +23,7 @@
         {#each suggestions as suggestion}
             <div class="suggestion" on:click={onSuggestionClick(suggestion)}>
                 <div class="snippet">{suggestion.snippet}</div>
-                <div class="score">{suggestion.score}</div>
+                <div class="score">{suggestion.score.toFixed(2)}</div>
             </div>
         {/each}
     </div>
