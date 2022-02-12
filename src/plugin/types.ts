@@ -11,7 +11,7 @@ export interface Dimensions {
     minHeight?: number
 }
 
-export interface RegisterUiRequest extends CoreRequest {
+export interface RegisterComponentsRequest extends CoreRequest {
     plugin: string
     components: Component[]
 }

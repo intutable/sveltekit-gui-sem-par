@@ -5,10 +5,6 @@
     export let suggestions: Suggestion[] | undefined = undefined
 
     const dispatcher = createEventDispatcher()
-
-    async function onSuggestionClick(suggestion: Suggestion): Promise<void> {
-        dispatcher("execute", suggestion)
-    }
 </script>
 
 {#if suggestions?.length === 0}
@@ -21,9 +17,13 @@
 
     <div class="suggestion-container">
         {#each suggestions as suggestion}
-            <div class="suggestion" on:click={onSuggestionClick(suggestion)}>
+            <div
+                class="suggestion"
+                on:click={() => dispatcher("execute", suggestion)}
+                on:contextmenu|preventDefault={() => dispatcher("showContextMenu", suggestion)}
+            >
                 <div class="snippet">{suggestion.snippet}</div>
-                <div class="score">{suggestion.score}</div>
+                <div class="score">{suggestion.score.toFixed(2)}</div>
             </div>
         {/each}
     </div>
