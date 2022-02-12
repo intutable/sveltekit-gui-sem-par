@@ -1,25 +1,34 @@
 <script lang="ts">
     import { LoadingIndicator, Output, OutputPanel, OutputType } from "@intutable/common-gui"
     import { getContext } from "svelte"
-    import { executeCodeSnippet, getSuggestions } from "./fetch"
+    import { executeCodeSnippet, getSimilarSuggestions, getSuggestions } from "./fetch"
     import InputField from "./inputField/InputField.svelte"
     import SuggestionContainer from "./suggestionContainer/SuggestionContainer.svelte"
-    import type { RequestContext, RequestError, Suggestion } from "./types"
+    import type {
+        CustomContextMenuData,
+        MenuContext,
+        RequestContext,
+        RequestError,
+        SimilarSuggestionsMenuItem,
+        Suggestion
+    } from "./types"
 
     const requestContext = getContext<RequestContext>("request")
-    let suggestions: Suggestion[] | undefined = undefined
+    let query: string | undefined
+    let suggestions: Suggestion[] | undefined
     let showLoadingIndicator = false
     let loadingTitle = ""
-    let output: Output | undefined = undefined
+    let output: Output | undefined
+
+    const menuContext = getContext<MenuContext>("menu")
 
     async function onSubmit(event: CustomEvent): Promise<void> {
-        const query = event.detail
+        query = event.detail
 
         if (!query) {
             return
         }
 
-        console.log(`Get suggestions for: "${query}"`)
         showLoadingIndicator = true
         loadingTitle = "Loading Suggestions"
 
@@ -27,34 +36,70 @@
             const response = await getSuggestions(query, requestContext)
             suggestions = response.suggestions
         } catch (error: RequestError) {
-            console.log(error.body.error)
+            onError(error)
+            return
         }
 
         showLoadingIndicator = false
+    }
+
+    async function onExecute(event: CustomEvent): Promise<void> {
+        showLoadingIndicator = true
+        loadingTitle = "Executing Snippet"
+        onClear()
+
+        try {
+            await executeCodeSnippet(event.detail.snippet, requestContext)
+        } catch (error) {
+            onError(error)
+            return
+        }
+
+        output = new Output(OutputType.Info, "Successfully executed code")
+        showLoadingIndicator = false
+    }
+
+    async function onGetSimilarSuggestions(item: SimilarSuggestionsMenuItem): Promise<void> {
+        showLoadingIndicator = true
+        loadingTitle = "Loading Similar Suggestions"
+        onClear()
+
+        try {
+            const response = await getSimilarSuggestions(item.query, item.snippet, requestContext)
+            suggestions = response.suggestions
+        } catch (error: RequestError) {
+            onError(error)
+            return
+        }
+
+        showLoadingIndicator = false
+    }
+
+    async function showContextMenu(event: CustomEvent): Promise<void> {
+        const menuItem: SimilarSuggestionsMenuItem = {
+            name: "Get similar suggestions",
+            menu: "sem-par/suggestion",
+            callback: onGetSimilarSuggestions,
+            query: query,
+            snippet: event.detail.snippet
+        }
+
+        const contextMenuData: CustomContextMenuData = {
+            menu: "sem-par/suggestion",
+            mousePosition: { x: 0, y: 0 },
+            customItems: [menuItem]
+        }
+
+        menuContext.showContextMenu(contextMenuData)
     }
 
     function onClear(): void {
         suggestions = undefined
     }
 
-    async function onExecute(event: CustomEvent): Promise<void> {
-        const suggestion: Suggestion = event.detail
-
-        console.log(`Executing snippet: "${suggestion.snippet}"`)
-        showLoadingIndicator = true
-        loadingTitle = "Executing Snippet"
-        onClear()
-
-        try {
-            const response = await executeCodeSnippet(suggestion.snippet, requestContext)
-
-            const message = response.message.charAt(0).toUpperCase() + response.message.slice(1)
-            output = new Output(OutputType.Info, message)
-        } catch (error: RequestError) {
-            const message = await error.body.error
-            output = new Output(OutputType.Error, message)
-        }
-
+    function onError(error: unknown): void {
+        console.error(error)
+        output = new Output(OutputType.Error, error.body?.error ?? `${error}`)
         showLoadingIndicator = false
     }
 </script>
@@ -65,7 +110,11 @@
         <LoadingIndicator title={loadingTitle} />
     {:else if suggestions}
         <div class="divider"></div>
-        <SuggestionContainer suggestions={suggestions} on:execute={onExecute} />
+        <SuggestionContainer
+            suggestions={suggestions}
+            on:execute={onExecute}
+            on:showContextMenu={showContextMenu}
+        />
     {:else if output}
         <OutputPanel {output} />
     {/if}
