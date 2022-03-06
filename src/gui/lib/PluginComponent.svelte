@@ -56,7 +56,7 @@
 
         if (variables.length > 0) {
             const placeholders: Placeholder[] = variables.map(variable => {
-                return { variable: variable, name: variable.replace(/%/g, "") }
+                return { variable, name: variable.replace(/%/g, "") }
             })
             sidePanelContext.showActionSidePanel(
                 { title: "SemPar: Execute Code Snippet", subtitle: snippet, placeholders },
