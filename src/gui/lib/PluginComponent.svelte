@@ -7,20 +7,23 @@
     import type {
         CustomContextMenuData,
         MenuContext,
+        Placeholder,
         RequestContext,
         RequestError,
+        SidePanelContext,
         SimilarSuggestionsMenuItem,
         Suggestion
     } from "./types"
 
     const requestContext = getContext<RequestContext>("request")
+    const menuContext = getContext<MenuContext>("menu")
+    const sidePanelContext = getContext<SidePanelContext>("sidePanel")
+
     let query: string | undefined
     let suggestions: Suggestion[] | undefined
     let showLoadingIndicator = false
     let loadingTitle = ""
     let output: Output | undefined
-
-    const menuContext = getContext<MenuContext>("menu")
 
     async function onSubmit(event: CustomEvent): Promise<void> {
         query = event.detail
@@ -48,8 +51,24 @@
         loadingTitle = "Executing Snippet"
         onClear()
 
+        const snippet = event.detail.snippet
+        const variables: string[] = snippet.match(/%.*?%/g)
+
+        if (variables.length > 0) {
+            const placeholders: Placeholder[] = variables.map(variable => {
+                return { variable, name: variable.replace(/%/g, "") }
+            })
+            sidePanelContext.showActionSidePanel(
+                { title: "SemPar: Execute Code Snippet", subtitle: snippet, placeholders },
+                async (placeholders: Placeholder[]) => {
+                    await executeCodeSnippet(snippet, requestContext, placeholders)
+                }
+            )
+            return
+        }
+
         try {
-            await executeCodeSnippet(event.detail.snippet, requestContext)
+            await executeCodeSnippet(snippet, requestContext)
         } catch (error) {
             onError(error)
             return
