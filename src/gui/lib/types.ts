@@ -10,10 +10,15 @@ export interface MenuContext {
 
 export interface SidePanelContext {
     showActionSidePanel: (
-        title: string,
-        placeholders: Placeholder[],
+        data: ActionData,
         onExecute: (placeholders: Placeholder[]) => void | Promise<void>
     ) => void
+}
+
+export interface ActionData {
+    title: string
+    subtitle?: string
+    placeholders: Placeholder[]
 }
 
 export interface Suggestion {

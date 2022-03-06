@@ -59,8 +59,7 @@
                 return { variable: variable, name: variable.replace(/%/g, "") }
             })
             sidePanelContext.showActionSidePanel(
-                "Execute Code Snippet",
-                placeholders,
+                { title: "SemPar: Execute Code Snippet", subtitle: snippet, placeholders },
                 async (placeholders: Placeholder[]) => {
                     await executeCodeSnippet(snippet, requestContext, placeholders)
                 }
