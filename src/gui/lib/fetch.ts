@@ -2,6 +2,7 @@ import type { CoreRequest } from "@intutable/core"
 import type {
     ExecuteCodeRequest,
     ExecuteCodeResponse,
+    Placeholder,
     RequestContext,
     SimilarSuggestionsRequest,
     SuggestionsRequest,
@@ -50,17 +51,19 @@ export function getSimilarSuggestions(
 
 export function executeCodeSnippet(
     codeSnippet: string,
-    context: RequestContext
+    context: RequestContext,
+    placeholders?: Placeholder[]
 ): Promise<ExecuteCodeResponse> {
     console.log(`Executing snippet: "${codeSnippet}"`)
 
     const coreRequest: CoreRequest = {
         channel: "data-dan",
-        method: "execute"
+        method: "executeParametrizedCode"
     }
 
     const request: ExecuteCodeRequest = {
-        code: codeSnippet
+        parametrizedCode: codeSnippet,
+        placeholders
     }
 
     return context.send(coreRequest, request) as Promise<ExecuteCodeResponse>

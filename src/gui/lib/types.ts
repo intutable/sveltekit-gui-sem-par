@@ -8,6 +8,19 @@ export interface MenuContext {
     showContextMenu: (data: CustomContextMenuData) => void
 }
 
+export interface SidePanelContext {
+    showActionSidePanel: (
+        data: ActionData,
+        onExecute: (placeholders: Placeholder[]) => void | Promise<void>
+    ) => void
+}
+
+export interface ActionData {
+    title: string
+    subtitle?: string
+    placeholders: Placeholder[]
+}
+
 export interface Suggestion {
     snippet: string
     score: number
@@ -27,7 +40,8 @@ export interface SuggestionsResponse extends CoreResponse {
 }
 
 export interface ExecuteCodeRequest {
-    code: string
+    parametrizedCode: string
+    placeholders?: Placeholder[]
 }
 
 export interface ExecuteCodeResponse extends CoreResponse {
@@ -69,6 +83,10 @@ export interface Placeholder {
 }
 
 export type PlaceholderType = "text" | "number" | "checkbox" | "date"
+
+export interface PlaceholderRequest extends CoreRequest {
+    placeholders?: Placeholder[]
+}
 
 export interface MousePosition {
     x: number
