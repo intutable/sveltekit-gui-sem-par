@@ -1,7 +1,7 @@
 # SemPar GUI Components
 
 This is a library for GUI Svelte components used in the [xTable] project for the [SemPar][sem-par] plugin.  
-The library adds the functionality of DataDan to the main GUI of xTable ([sveltekit-gui]).
+The library adds the functionality of SemPar to the main GUI of xTable ([sveltekit-gui]).
 
 ## 🔧 Project Setup
 ### Main Setup
