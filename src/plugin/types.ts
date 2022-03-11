@@ -7,7 +7,7 @@ export interface Component {
 }
 
 export interface Dimensions {
-    minWidth?: number,
+    minWidth?: number
     minHeight?: number
 }
 
