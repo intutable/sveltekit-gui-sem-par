@@ -3,12 +3,19 @@
 
     const dispatcher = createEventDispatcher()
 
-    async function onSubmit(event): Promise<void> {
+    /**
+     * Submits the entered query and fetches the suggestions from sem-par.
+     * @param event submit event dispatched by the UI
+     */
+    async function onSubmit(event: SubmitEvent): Promise<void> {
         const formData = new FormData(event.target)
         const data = Object.fromEntries(formData.entries())
         dispatcher("submit", data.query)
     }
 
+    /**
+     * Clear the current suggestions when a new query is being entered.
+     */
     async function onSearch(): Promise<void> {
         dispatcher("clear")
     }
