@@ -21,8 +21,8 @@
     }
 </script>
 
-<form class="form" on:submit|preventDefault={onSubmit} on:search={onSearch}>
-    <input class="text-field" type="search" id="query" name="query" placeholder="Enter Query...">
+<form class="form" on:search={onSearch} on:submit|preventDefault={onSubmit}>
+    <input class="text-field" id="query" name="query" placeholder="Enter Query..." type="search">
     <br>
 </form>
 

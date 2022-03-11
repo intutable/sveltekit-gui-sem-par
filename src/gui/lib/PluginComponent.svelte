@@ -150,7 +150,7 @@
 </script>
 
 <div class="main-container">
-    <InputField on:submit={onSubmit} on:clear={onClear} />
+    <InputField on:clear={onClear} on:submit={onSubmit} />
     {#if showLoadingIndicator}
         <LoadingIndicator title={loadingTitle} />
     {:else if suggestions}
