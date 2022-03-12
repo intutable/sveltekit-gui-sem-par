@@ -151,6 +151,7 @@
         await executeCodeSnippet(snippet, requestContext, placeholders)
         output = new Output(OutputType.Info, "Successfully executed code")
         showLoadingIndicator = false
+        storeContext.refresh()
     }
 </script>
 
