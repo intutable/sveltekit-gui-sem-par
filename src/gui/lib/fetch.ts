@@ -6,65 +6,82 @@ import type {
     RequestContext,
     SimilarSuggestionsRequest,
     SuggestionsRequest,
-    SuggestionsResponse
+    SuggestionsResponse,
 } from "./types"
 
+/**
+ * Fetch suggestions from the sem-par plugin given a user defined query.
+ * @param query query for which suggestions should be generated
+ * @param requestContext Svelte Context for making request calls
+ */
 export function getSuggestions(
     query: string,
-    context: RequestContext
+    requestContext: RequestContext
 ): Promise<SuggestionsResponse> {
     console.log(`Get suggestions for: "${query}"`)
 
     const coreRequest: CoreRequest = {
         channel: "sem-par",
-        method: "getSuggestions"
+        method: "getSuggestions",
     }
 
     const request: SuggestionsRequest = {
         utterance: query,
-        maxSuggestions: 10
+        maxSuggestions: 10,
     }
 
-    return context.send(coreRequest, request) as Promise<SuggestionsResponse>
+    return requestContext.send(coreRequest, request) as Promise<SuggestionsResponse>
 }
 
+/**
+ * Fetch similar suggestions from the sem-par plugin given a query and a snippet.
+ * @param query query for which suggestions should be generated
+ * @param snippet snippet for which suggestions should be generated
+ * @param requestContext Svelte Context for making request calls
+ */
 export function getSimilarSuggestions(
     query: string,
     snippet: string,
-    context: RequestContext
+    requestContext: RequestContext
 ): Promise<SuggestionsResponse> {
     console.log(`Get similar suggestions for: "${snippet}"`)
 
     const coreRequest: CoreRequest = {
         channel: "sem-par",
-        method: "getSimilarSuggestions"
+        method: "getSimilarSuggestions",
     }
 
     const request: SimilarSuggestionsRequest = {
         utterance: query,
         snippet: snippet,
-        maxSuggestions: 10
+        maxSuggestions: 10,
     }
 
-    return context.send(coreRequest, request) as Promise<SuggestionsResponse>
+    return requestContext.send(coreRequest, request) as Promise<SuggestionsResponse>
 }
 
+/**
+ * Execute a code snippet using data-dan.
+ * @param codeSnippet snippet to be executed
+ * @param requestContext Svelte Context for making request calls
+ * @param placeholders filled placeholders contained in code snippet
+ */
 export function executeCodeSnippet(
     codeSnippet: string,
-    context: RequestContext,
+    requestContext: RequestContext,
     placeholders?: Placeholder[]
 ): Promise<ExecuteCodeResponse> {
     console.log(`Executing snippet: "${codeSnippet}"`)
 
     const coreRequest: CoreRequest = {
         channel: "data-dan",
-        method: "executeParametrizedCode"
+        method: "executeParametrizedCode",
     }
 
     const request: ExecuteCodeRequest = {
         parametrizedCode: codeSnippet,
-        placeholders
+        placeholders: placeholders ?? [],
     }
 
-    return context.send(coreRequest, request) as Promise<ExecuteCodeResponse>
+    return requestContext.send(coreRequest, request) as Promise<ExecuteCodeResponse>
 }
