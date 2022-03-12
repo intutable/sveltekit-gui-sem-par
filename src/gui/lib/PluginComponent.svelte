@@ -9,13 +9,14 @@
         MenuContext,
         Placeholder,
         RequestContext,
-        RequestError,
         SidePanelContext,
         SimilarSuggestionsMenuItem,
+        StoreContext,
         Suggestion
     } from "./types"
 
     const requestContext = getContext<RequestContext>("request")
+    const storeContext = getContext<StoreContext>("store")
     const menuContext = getContext<MenuContext>("menu")
     const sidePanelContext = getContext<SidePanelContext>("sidePanel")
 
@@ -42,7 +43,7 @@
         try {
             const response = await getSuggestions(query, requestContext)
             suggestions = response.suggestions
-        } catch (error: RequestError) {
+        } catch (error) {
             onError(error)
             return
         }
@@ -64,29 +65,19 @@
         const snippet = event.detail.snippet
         const variables: string[] = snippet.match(/%.*?%/g)
 
+        if (!variables || variables.length === 0) {
+            await executeSnippet(snippet)
+            return
+        }
+
         // If the code snippet contains placeholders, show a placeholder dialog
-        if (variables.length > 0) {
-            const placeholders: Placeholder[] = variables.map(variable => {
-                return { variable, name: variable.replace(/%/g, "") }
-            })
-            sidePanelContext.showActionSidePanel(
-                { title: "SemPar: Execute Code Snippet", subtitle: snippet, placeholders },
-                async (placeholders: Placeholder[]) => {
-                    await executeCodeSnippet(snippet, requestContext, placeholders)
-                }
-            )
-            return
-        }
-
-        try {
-            await executeCodeSnippet(snippet, requestContext)
-        } catch (error) {
-            onError(error)
-            return
-        }
-
-        output = new Output(OutputType.Info, "Successfully executed code")
-        showLoadingIndicator = false
+        const placeholders: Placeholder[] = variables.map(variable => {
+            return { variable, name: variable.replace(/%/g, "") }
+        })
+        sidePanelContext.showActionSidePanel(
+            { title: "SemPar: Execute Code Snippet", subtitle: snippet, placeholders },
+            async (placeholders: Placeholder[]) => await executeSnippet(snippet, placeholders)
+        )
     }
 
     /**
@@ -101,7 +92,7 @@
         try {
             const response = await getSimilarSuggestions(item.query, item.snippet, requestContext)
             suggestions = response.suggestions
-        } catch (error: RequestError) {
+        } catch (error) {
             onError(error)
             return
         }
@@ -145,6 +136,18 @@
     function onError(error: unknown): void {
         console.error(error)
         output = new Output(OutputType.Error, error.body?.error ?? `${error}`)
+        showLoadingIndicator = false
+    }
+
+    async function executeSnippet(snippet: string, placeholders?: Placeholder[]): Promise<void> {
+        try {
+            await executeCodeSnippet(snippet, requestContext, placeholders)
+        } catch (error) {
+            onError(error)
+            return
+        }
+
+        output = new Output(OutputType.Info, "Successfully executed code")
         showLoadingIndicator = false
     }
 </script>

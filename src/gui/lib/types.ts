@@ -4,6 +4,13 @@ export interface RequestContext {
     send: (request: CoreRequest, body: object) => Promise<CoreResponse>
 }
 
+export interface StoreContext {
+    commitChanges: () => void
+    tableNames: () => string[]
+    refresh: () => void
+    updateTable: (tableData: TableData) => void
+}
+
 export interface MenuContext {
     showContextMenu: (data: CustomContextMenuData) => void
 }
@@ -21,11 +28,6 @@ export interface ActionSidePanelData {
     placeholders: Placeholder[]
 }
 
-export interface Suggestion {
-    snippet: string
-    score: number
-}
-
 export interface SuggestionsRequest {
     utterance: string
     maxSuggestions: number
@@ -37,6 +39,11 @@ export interface SimilarSuggestionsRequest extends SuggestionsRequest {
 
 export interface SuggestionsResponse extends CoreResponse {
     suggestions: Suggestion[]
+}
+
+export interface Suggestion {
+    snippet: string
+    score: number
 }
 
 export interface ExecuteCodeRequest {
@@ -59,20 +66,22 @@ export interface MenuData {
     customItems: MenuItem[]
 }
 
-export interface MenuItem {
-    name: string
+export interface MenuItem extends Action {
     menu: string
-    request?: CoreRequest
-    callback?: (item: MenuItem, placeholders: Placeholders) => void
+}
+
+export interface Action {
+    name: string
     placeholders?: Placeholder[]
+    request?: CoreRequest
+    callback?: (action: Action, placeholders: Placeholder[]) => void | Promise<void>
+    dispatchEvent?: string
 }
 
 export interface SimilarSuggestionsMenuItem extends MenuItem {
     query: string
     snippet: string
 }
-
-export type Placeholders = { [key: string]: string | number | boolean }
 
 export interface Placeholder {
     variable: string
@@ -93,6 +102,19 @@ export interface MousePosition {
     y: number
 }
 
-export interface RequestError extends Error {
-    body: object
+export interface TableData {
+    table: Table
+    columns: Column[]
+    rows: any[]
+}
+
+export interface Table {
+    tableName: string
+    tableId: number
+}
+
+export interface Column {
+    _id: number
+    name: string
+    type: string
 }

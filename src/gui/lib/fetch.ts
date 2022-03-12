@@ -80,7 +80,7 @@ export function executeCodeSnippet(
 
     const request: ExecuteCodeRequest = {
         parametrizedCode: codeSnippet,
-        placeholders,
+        placeholders: placeholders ?? [],
     }
 
     return requestContext.send(coreRequest, request) as Promise<ExecuteCodeResponse>
