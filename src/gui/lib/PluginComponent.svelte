@@ -11,10 +11,12 @@
         RequestContext,
         SidePanelContext,
         SimilarSuggestionsMenuItem,
+        StoreContext,
         Suggestion
     } from "./types"
 
     const requestContext = getContext<RequestContext>("request")
+    const storeContext = getContext<StoreContext>("store")
     const menuContext = getContext<MenuContext>("menu")
     const sidePanelContext = getContext<SidePanelContext>("sidePanel")
 
