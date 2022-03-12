@@ -65,19 +65,24 @@
         const snippet = event.detail.snippet
         const variables: string[] = snippet.match(/%.*?%/g)
 
-        if (!variables || variables.length === 0) {
-            await executeSnippet(snippet)
+        // If the code snippet contains placeholders, show a placeholder dialog first.
+        if (variables && variables.length > 0) {
+            const placeholders: Placeholder[] = variables.map(variable => {
+                return { variable, name: variable.replace(/%/g, "") }
+            })
+
+            sidePanelContext.showActionSidePanel(
+                { title: "SemPar: Execute Code Snippet", subtitle: snippet, placeholders },
+                (placeholders: Placeholder[]) => executeSnippet(snippet, placeholders)
+            )
             return
         }
 
-        // If the code snippet contains placeholders, show a placeholder dialog
-        const placeholders: Placeholder[] = variables.map(variable => {
-            return { variable, name: variable.replace(/%/g, "") }
-        })
-        sidePanelContext.showActionSidePanel(
-            { title: "SemPar: Execute Code Snippet", subtitle: snippet, placeholders },
-            async (placeholders: Placeholder[]) => await executeSnippet(snippet, placeholders)
-        )
+        try {
+            await executeSnippet(snippet)
+        } catch (error) {
+            onError(error)
+        }
     }
 
     /**
@@ -139,14 +144,11 @@
         showLoadingIndicator = false
     }
 
-    async function executeSnippet(snippet: string, placeholders?: Placeholder[]): Promise<void> {
-        try {
-            await executeCodeSnippet(snippet, requestContext, placeholders)
-        } catch (error) {
-            onError(error)
-            return
-        }
-
+    async function executeSnippet(
+        snippet: string,
+        placeholders?: Placeholder[]
+    ): Promise<void> {
+        await executeCodeSnippet(snippet, requestContext, placeholders)
         output = new Output(OutputType.Info, "Successfully executed code")
         showLoadingIndicator = false
     }
