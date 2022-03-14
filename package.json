@@ -1,6 +1,6 @@
 {
     "name": "@intutable/sem-par-gui",
-    "version": "0.5.2",
+    "version": "1.0.0",
     "description": "",
     "main": "dist/index.js",
     "scripts": {
